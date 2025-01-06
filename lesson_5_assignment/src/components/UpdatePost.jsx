@@ -75,6 +75,7 @@ const UpdatePostMutation = () => {
                          name="title" 
                          onChange={(e) => setTitle(e.target.value)}
                          disabled={mutation.isLoading}
+                         aria-label={t('title')}
                           />
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="body">
@@ -86,6 +87,7 @@ const UpdatePostMutation = () => {
                          value={body}
                          onChange={(e) => setBody(e.target.value)}
                          disabled={mutation.isLoading}
+                         aria-label={t('body')}
                          />
                     </Form.Group>
                     <Button variant="success" type="submit" disabled={mutation.isLoading}>

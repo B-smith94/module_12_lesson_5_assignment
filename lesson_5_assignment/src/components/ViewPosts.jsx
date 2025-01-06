@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
-import { Spinner, Alert, Row, Col, Card, Button, Form, Nav } from 'react-bootstrap'
+import { Spinner, Alert, Row, Col, Card, Button, Form } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom';
 import { useCallback, useMemo, useState } from 'react';
 import NavigationBar from './NavigationBar';
@@ -51,6 +51,10 @@ const ViewPosts = () => {
         navigate(`/update-post/${id}`)
     }, [navigate]);
 
+    const handleSubmit = (event) => {
+        event.preventDefault();
+    }
+
     if (isLoading) return <Spinner animation='border' role='status'><span className='visually-hidden'>Loading...</span></Spinner>;
     if (error) return <Alert variant='danger'>{error.message}</Alert>
 
@@ -67,6 +71,7 @@ const ViewPosts = () => {
                 type='number'
                 placeholder={t('searchPlaceholder')}
                 onChange={(e) => {setUserId(e.target.value); setSubmitted(true)}}
+                aria-label='formSearchPosts'
                 />
             </Form.Group>
             <Row xs={1} md={4}>
@@ -82,6 +87,16 @@ const ViewPosts = () => {
                                     {deletePostMutation.isLoading && deletePostMutation.variables === post.id ? 
                                     t('deleting') : t("delete")}
                                 </Button>
+                                <Form onSubmit={handleSubmit}>
+                                    <Form.Group controlId='formComments' className='m-3'>
+                                        <Form.Control
+                                         type="text"
+                                         aria-label='CommentOnPosts'
+                                         />
+                                    </Form.Group>
+                                    <Button variant='primary' type='submit'>Enter Comment</Button>
+                                </Form>
+                                {t('comments')}:
                             </Card.Body>
                         </Card>
                     </Col>

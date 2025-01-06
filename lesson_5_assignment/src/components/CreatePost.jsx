@@ -25,6 +25,16 @@ const CreatePost = () => {
     const [showSuccessAlert, setShowSuccessALert] = useState(false);
     const navigate = useNavigate();
     const [t] = useTranslation();
+    const [submitted, setSubmitted] = useState(false)
+    const [validId, setValidId] = useState(true);
+
+    const checkValidId = (event) => {
+        if (event.target.value > 0 && event.target.value <= 10) {
+            setValidId(true);
+        } else {
+            setValidId(false);
+        }
+    }
 
     const { mutate, isError, error } = useMutation({
         mutationFn: newPost,
@@ -46,6 +56,7 @@ const CreatePost = () => {
         };
         mutate(post);
         event.target.reset();
+        setSubmitted(true);
     };
 
 
@@ -61,7 +72,12 @@ const CreatePost = () => {
                 <Form onSubmit={handleSubmit}>
                     <Form.Group className="mb-3" controlId="title">
                         <Form.Label>{t('title')}</Form.Label>
-                        <Form.Control type="text" placeholder={t('titlePlaceholder')} name="title" required />
+                        <Form.Control
+                         type="text"
+                         placeholder={t('titlePlaceholder')} 
+                         name="title" 
+                         aria-label={t('title')}
+                         required />
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="body">
                         <Form.Label>{t('body')}</Form.Label>
@@ -69,7 +85,17 @@ const CreatePost = () => {
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="userId">
                         <Form.Label>{t('userId')}</Form.Label>
-                        <Form.Control type="number" placeholder={t('userIdPlaceholder')} name="userId" required />
+                        <Form.Control
+                         type="number" 
+                         placeholder={t('userIdPlaceholder')} 
+                         name="userId" 
+                         onChange={(e) => checkValidId(e)}
+                         isInvalid={submitted && !validId}
+                         aria-describedby="userIdHelpBlock"
+                         required />
+                         <Form.Control.Feedback type="invalid" id="userIdHelpBlock">
+                            User ID Must be a number between 1 and 10
+                         </Form.Control.Feedback>
                         <Button variant="success" type="submit" className="m-3">{t('createPage')}</Button>
                         <Button variant="primary" onClick={() => navigate('/')} className="m-3">{t('viewPage')}</Button>
                     </Form.Group>

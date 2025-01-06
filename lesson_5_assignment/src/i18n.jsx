@@ -26,7 +26,9 @@ const resources = {
             newPost: 'Make a New Post',
             searchPlaceholder: 'Search posts by User ID',
             titlePlaceholder: 'Enter post title',
-            userIdPlaceholder: 'Enter User ID Number'
+            userIdPlaceholder: 'Enter User ID Number',
+            comments: "Comments",
+            enterComment: "Enter Comment"
         },
     },
     fr: {
@@ -52,7 +54,9 @@ const resources = {
             newPost: "Faire une Publications Nouveau",
             searchPlaceholder: "Rechercher des publications par ID d'utilisateur",
             titlePlaceholder: "Tapez le Titre",
-            userIdPlaceholder: "tapez le numéro d'identification de l'utilisateur"
+            userIdPlaceholder: "tapez le numéro d'identification de l'utilisateur",
+            comments: "Commentaires",
+            enterComment: "Tapez un Commentaire"
         }
     }
 };
