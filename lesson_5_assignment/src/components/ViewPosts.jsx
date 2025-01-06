@@ -1,13 +1,18 @@
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
-import { Spinner, Alert, Row, Col, Card, Button, Form } from 'react-bootstrap'
+import { Spinner, Alert, Row, Col, Card, Button, Form, Nav } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom';
 import { useCallback, useMemo, useState } from 'react';
+import NavigationBar from './NavigationBar';
+import '../i18n';
+import { useTranslation } from 'react-i18next';
+
 
 const ViewPosts = () => {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const [userId, setUserId] = useState('');
-
+    const [submitted, setSubmitted] = useState(false);
+    const [t] = useTranslation();
 
     const fetchPosts = async () => {
         const response = await fetch('https://jsonplaceholder.typicode.com/posts');
@@ -37,12 +42,11 @@ const ViewPosts = () => {
         },
     });
 
-    // Task 1
     const filteredPosts = useMemo(() => {
         if (!userId) return posts;
         return posts.filter((post) => post.userId === parseInt(userId));
     }, [posts, userId]);
-    // Task 2
+
     const selectPostUpdate = useCallback((id) => {
         navigate(`/update-post/${id}`)
     }, [navigate]);
@@ -52,27 +56,31 @@ const ViewPosts = () => {
 
     return (
         <div>
-            <h2>Posts</h2>
-            <Button variant='primary' onClick={() => navigate('/new-post')} className='mb-2'>Create Post</Button>
-            <Form.Group controlId='searchPosts' className='mb-3'>
+            <NavigationBar />
+            <h1>{t('mainTitle')}</h1>
+            <p>{t('welcomeMessage')}</p>
+            <hr />
+            <h2>{t('postPage')}</h2>
+            <Button variant='primary' onClick={() => navigate('/new-post')} className='mb-2'>{t('createPage')}</Button>
+            <Form.Group controlId='formSearchPosts' className='mb-3'>
                 <Form.Control
                 type='number'
-                placeholder='Search posts by User Id'
-                onChange={(e) => setUserId(e.target.value)}
+                placeholder={t('searchPlaceholder')}
+                onChange={(e) => {setUserId(e.target.value); setSubmitted(true)}}
                 />
             </Form.Group>
             <Row xs={1} md={4}>
                 {filteredPosts.map(post => (
                     <Col key={post.id}>
-                        <Card>
+                        <Card className='mb-3'>
                             <Card.Body>
                                 <Card.Title>Post {post.id} - {post.title}</Card.Title>
-                                <Card.Text> {post.body} <br />-User ID {post.userId}</Card.Text>
-                                <Button variant='primary' onClick={() => selectPostUpdate(post.id)}>Edit</Button>
+                                <Card.Text> {post.body} <br />-{t('userId')} {post.userId}</Card.Text>
+                                <Button variant='primary' onClick={() => selectPostUpdate(post.id)}>{t('edit')}</Button>
                                 <Button variant='danger' onClick={() => deletePostMutation.mutate(post.id)}
                                 disabled={deletePostMutation.isLoading && deletePostMutation.variables === post.id}>
                                     {deletePostMutation.isLoading && deletePostMutation.variables === post.id ? 
-                                    "Deleting..." : "Delete"}
+                                    t('deleting') : t("delete")}
                                 </Button>
                             </Card.Body>
                         </Card>

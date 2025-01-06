@@ -2,6 +2,9 @@ import { Col, Form, Button, Alert } from "react-bootstrap";
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {useState} from 'react'
 import { useNavigate } from "react-router-dom";
+import NavigationBar from "./NavigationBar";
+import '../i18n';
+import { useTranslation } from "react-i18next";
 
 const newPost = async (post) => {
     const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
@@ -21,6 +24,7 @@ const CreatePost = () => {
     const queryClient = useQueryClient();
     const [showSuccessAlert, setShowSuccessALert] = useState(false);
     const navigate = useNavigate();
+    const [t] = useTranslation();
 
     const { mutate, isError, error } = useMutation({
         mutationFn: newPost,
@@ -47,25 +51,27 @@ const CreatePost = () => {
 
 
     return (
+        
         <div>
-            {isError && <Alert variant="danger">An error occurred: {error.message}</Alert>}
-            {showSuccessAlert && <Alert variant="success">Post created successfully</Alert>}
-            <h3>Create Post</h3>
+            <NavigationBar />
+            {isError && <Alert variant="danger">{t('errorMessage')} {error.message}</Alert>}
+            {showSuccessAlert && <Alert variant="success">{t('createSuccessMessage')}</Alert>}
+            <h3>{t('createPage')}</h3>
             <Col md={{ span: 6, offset: 3 }}>
                 <Form onSubmit={handleSubmit}>
                     <Form.Group className="mb-3" controlId="title">
-                        <Form.Label>Title</Form.Label>
-                        <Form.Control type="text" placeholder="Enter post title" name="title" required />
+                        <Form.Label>{t('title')}</Form.Label>
+                        <Form.Control type="text" placeholder={t('titlePlaceholder')} name="title" required />
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="body">
-                        <Form.Label>Body</Form.Label>
+                        <Form.Label>{t('body')}</Form.Label>
                         <Form.Control name="body" as='textarea' rows={3} required />
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="userId">
-                        <Form.Label>User ID</Form.Label>
-                        <Form.Control type="number" placeholder="Enter User ID Number" name="userId" required />
-                        <Button variant="success" type="submit">Create Post</Button>
-                        <Button variant="primary" onClick={() => navigate('/')}>View Posts</Button>
+                        <Form.Label>{t('userId')}</Form.Label>
+                        <Form.Control type="number" placeholder={t('userIdPlaceholder')} name="userId" required />
+                        <Button variant="success" type="submit" className="m-3">{t('createPage')}</Button>
+                        <Button variant="primary" onClick={() => navigate('/')} className="m-3">{t('viewPage')}</Button>
                     </Form.Group>
                 </Form>
             </Col>
