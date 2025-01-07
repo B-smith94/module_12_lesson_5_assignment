@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
-import { Spinner, Alert, Row, Col, Card, Button, Form } from 'react-bootstrap'
+import { Spinner, Alert, Row, Col, Card, Button, Form, Dropdown } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom';
 import { useCallback, useMemo, useState } from 'react';
 import NavigationBar from './NavigationBar';
@@ -99,13 +99,20 @@ const ViewPosts = () => {
             <hr />
             <h2>{t('postPage')}</h2>
             <Button variant='primary' onClick={() => navigate('/new-post')} className='mb-2'>{t('createPage')}</Button>
-            <Form.Group controlId='formSearchPosts' className='mb-3'>
-                <Form.Control
-                type='number'
-                placeholder={t('searchPlaceholder')}
-                onChange={(e) => setUserId(e.target.value)}
-                aria-label='formSearchPosts'
-                />
+            <Form.Group controlId="searchPosts" className='mb-3'>
+                <Dropdown>
+                    <Dropdown.Toggle variant='info' id='dropdown-filter-user'>
+                        {t('filterByUser')}
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu aria-labelledby='dropdown-fliter-user'>
+                        <Dropdown.Item onClick={() => setUserId('')}>{t('showAll')}</Dropdown.Item>
+                        {Array.from(new Set(posts.map((post) => post.userId))).map((id) => (
+                            <Dropdown.Item key={id} onClick={() => setUserId(id)}>
+                                {t('userId')} {id}
+                            </Dropdown.Item>
+                        ))}
+                    </Dropdown.Menu>
+                </Dropdown>
             </Form.Group>
             <Row xs={1} md={4}>
                 {filteredPosts.map(post => (

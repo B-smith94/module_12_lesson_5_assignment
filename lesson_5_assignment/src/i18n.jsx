@@ -28,7 +28,9 @@ const resources = {
             titlePlaceholder: 'Enter post title',
             userIdPlaceholder: 'Enter User ID Number',
             comments: "Comments",
-            enterComment: "Enter Comment"
+            enterComment: "Enter Comment",
+            filterByUser: "View Posts by User ID",
+            showAll: "Show All"
         },
     },
     fr: {
@@ -56,7 +58,9 @@ const resources = {
             titlePlaceholder: "Tapez le Titre",
             userIdPlaceholder: "tapez le numéro d'identification de l'utilisateur",
             comments: "Commentaires",
-            enterComment: "Tapez un Commentaire"
+            enterComment: "Tapez un Commentaire",
+            filterByUser: "Regardez les Publications par ID d'Utilisateur",
+            showAll: "Tout Afficher"
         }
     }
 };
