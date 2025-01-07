@@ -13,6 +13,7 @@ const ViewPosts = () => {
     const [userId, setUserId] = useState('');
     const [submitted, setSubmitted] = useState(false);
     const [t] = useTranslation();
+    const [comments, setComments] = useState({});
 
     const fetchPosts = async () => {
         const response = await fetch('https://jsonplaceholder.typicode.com/posts');
@@ -51,9 +52,18 @@ const ViewPosts = () => {
         navigate(`/update-post/${id}`)
     }, [navigate]);
 
-    const handleSubmit = (event) => {
+    const handleSubmit = (event, postId) => {
         event.preventDefault();
-    }
+
+        const comment = event.target.elements[0].value
+        setComments(prevComments => ({
+            ...prevComments,
+            [postId]: [ ...(prevComments[postId] || []), comment]
+        }))
+        console.log(event.target.elements[0].value);
+        console.log(comments);
+        event.target.reset()
+    };
 
     if (isLoading) return <Spinner animation='border' role='status'><span className='visually-hidden'>Loading...</span></Spinner>;
     if (error) return <Alert variant='danger'>{error.message}</Alert>
@@ -87,16 +97,23 @@ const ViewPosts = () => {
                                     {deletePostMutation.isLoading && deletePostMutation.variables === post.id ? 
                                     t('deleting') : t("delete")}
                                 </Button>
-                                <Form onSubmit={handleSubmit}>
-                                    <Form.Group controlId='formComments' className='m-3'>
+                                <Form onSubmit={(e) => handleSubmit(e, post.id)}>
+                                    <Form.Group controlId={`formComments-${post.id}`} className='m-3'>
                                         <Form.Control
                                          type="text"
-                                         aria-label='CommentOnPosts'
+                                         aria-label='commentOnPosts'
                                          />
                                     </Form.Group>
                                     <Button variant='primary' type='submit'>Enter Comment</Button>
                                 </Form>
                                 {t('comments')}:
+                                <ul>
+                                    {(comments[post.id] || []).map((comment, index) => (
+                                        <li key={index}>
+                                            {comment}
+                                        </li>
+                                    ))}
+                                </ul>
                             </Card.Body>
                         </Card>
                     </Col>
