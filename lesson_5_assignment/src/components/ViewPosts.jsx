@@ -11,9 +11,9 @@ const ViewPosts = () => {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const [userId, setUserId] = useState('');
-    const [submitted, setSubmitted] = useState(false);
     const [t] = useTranslation();
     const [comments, setComments] = useState({});
+    const [commentErrors, setCommentErrors] = useState({})
 
     const fetchPosts = async () => {
         const response = await fetch('https://jsonplaceholder.typicode.com/posts');
@@ -52,18 +52,41 @@ const ViewPosts = () => {
         navigate(`/update-post/${id}`)
     }, [navigate]);
 
+
+    // Task 2
+    const isValidComment = (comment) => {
+        return comment.trim().length > 0;
+    }
+
     const handleSubmit = (event, postId) => {
         event.preventDefault();
 
         const comment = event.target.elements[0].value
+
+        if (!isValidComment(comment)) {
+            setCommentErrors(prevErrors => ({
+                ...prevErrors,
+                [postId]: "Cannot submit a blank comment",
+            }))
+            return;
+        }
+        
+        setCommentErrors(prevErrors => ({
+            ...prevErrors,
+            [postId]: null,
+        }));
+
         setComments(prevComments => ({
             ...prevComments,
-            [postId]: [ ...(prevComments[postId] || []), comment]
+            [postId]: [ ...(prevComments[postId] || []), comment],
         }))
         console.log(event.target.elements[0].value);
         console.log(comments);
         event.target.reset()
     };
+
+
+   
 
     if (isLoading) return <Spinner animation='border' role='status'><span className='visually-hidden'>Loading...</span></Spinner>;
     if (error) return <Alert variant='danger'>{error.message}</Alert>
@@ -80,7 +103,7 @@ const ViewPosts = () => {
                 <Form.Control
                 type='number'
                 placeholder={t('searchPlaceholder')}
-                onChange={(e) => {setUserId(e.target.value); setSubmitted(true)}}
+                onChange={(e) => setUserId(e.target.value)}
                 aria-label='formSearchPosts'
                 />
             </Form.Group>
@@ -102,7 +125,12 @@ const ViewPosts = () => {
                                         <Form.Control
                                          type="text"
                                          aria-label='commentOnPosts'
+                                         isInvalid={!!commentErrors[post.id]}
+                                         aria-describedby='commentsFormHelp'
                                          />
+                                        <Form.Control.Feedback type='invalid' id='commentsFormHelp'>
+                                            {commentErrors[post.id]}
+                                        </Form.Control.Feedback>
                                     </Form.Group>
                                     <Button variant='primary' type='submit'>Enter Comment</Button>
                                 </Form>
